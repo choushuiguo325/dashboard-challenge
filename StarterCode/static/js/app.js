@@ -1,18 +1,17 @@
-d3.json("samples.json").then(data => {
-    console.log(data);
+d3.json("./samples.json").then(data => {
+    console.log("data",data);
+    var btn = d3.select("#selDataset").node;
+    // extract the ids of all samples as a list
+    var samplesId = data.names;
+    console.log("samplesID", samplesId);
+    // create a loop to create an option dropdown for each sample id
+    samplesId.forEach(id => {
+        var option = btn.append('option');
+        option.attr('value', id);
+        option.text(id);
+    });
 
-    // var btn = d3.select("#selDataset");
-    // // extract the ids of all samples as a list
-    // var samplesId = data.samples.map(sample => sample.id);
-    // console.log(samplesId);
-    // // create a loop to create an option dropdown for each sample id
-    // samplesId.forEach(id => {
-    //     var option = btn.append('option');
-    //     option.attr('value', id);
-    //     option.text(id);
-    // });
-
-    // // 1. Barchart
+    // // 1. Barchart function 
     // // extract the values, ids, and labels from the json file as lists.
     // var sampleValues = data.samples.sample_values
     // var otuIds = data.samples.otu_ids;
@@ -60,9 +59,9 @@ d3.json("samples.json").then(data => {
     // };
     // Plotly.newPlot("bar",barTraces,barLayout);
 
-    // // 2. Bubble chart
-    // // 3. Demographic Info
-    // // 4. Gauge chart
+    // 2. Bubble chart function
+    // 3. Demographic info function
+    // 4. Gauge chart funtion
 
 
 });
