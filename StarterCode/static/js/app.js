@@ -35,6 +35,7 @@ function process() {
         // inverse the list to fit the horizontal bar chart
         chartInfo.reverse();
         console.log("chart",chartInfo);
+        
         var barValues = chartInfo.map(sample => sample.value);
         var barIds = chartInfo.map(sample => `OTU ${sample.id}`);
         var barLabels = chartInfo.map(sample => sample.label);
@@ -51,22 +52,49 @@ function process() {
 
         barTraces = [bar1];
 
-        var layout = {
+        var barLayout = {
             title: "Top 10 OTUs",
             xaxis: {title: "Values"},
-            yaxis: {title: "OTU id"}
+            yaxis: {title: "OTU ID"}
         };
+        Plotly.newPlot("bar", barTraces, barLayout);
 
-        Plotly.newPlot("bar", barTraces, layout);
+        // 2. Bubble chart function
+        var bubValues = samplesInfo.map(sample => sample.value);
+        var bubIds = samplesInfo.map(sample => sample.id);
+        var bubLabels = samplesInfo.map(sample => sample.label);
+        // var bubSize = samplesInfo.map(sample => 2*Math.max(sample.value)/(Math.min(sample.value)));
+        var bubColor = samplesInfo.map(sample => `"#{sample.value}"`);
+
+        var bub1 = {
+            type: 'scatter',
+            x: bubIds,
+            y: bubValues,
+            text: bubLabels,
+            mode: 'markers',
+            marker: {color: bubColor, size: bubValues,sizeref: 2},
+            
+        }
+
+        bubTraces = [bub1]
+        bubLayout = {
+            autosize: true,
+            yaxis: {title: "Values", autorange: true, showgrid: true},
+            xaxis: {title: "OTU ID", autorange: true, showgrid: true}
+            
+        };
+        Plotly.newPlot("bubble", bubTraces, bubLayout);
+        
+        // 3. Demographic info function
+        // 4. Gauge chart funtion 
+
 
     });
     // d3.event.preventDefault();
 
     
 
-    // 2. Bubble chart function
-    // 3. Demographic info function
-    // 4. Gauge chart funtion 
+
 };
 
 
