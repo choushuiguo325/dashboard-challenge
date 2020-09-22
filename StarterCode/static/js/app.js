@@ -5,13 +5,18 @@ function process() {
     console.log("id",targetId);
     // console.log("total",total);
     d3.json("./samples.json").then(data => {
+        console.log(data);
         samplesLists = data.samples;
+        var samplesDemos = data.metadata;
+        console.log("list",samplesDemos);
         console.log("list",samplesLists);
 
         // 1. Barchart function 
         // extract the values, ids, and labels from total.
         var targetSample = samplesLists.filter(sample => parseInt(sample.id) === parseInt(targetId))[0];
-        console.log(targetSample);
+        var targetDemo = samplesDemos.filter(sample => parseInt(sample.id) === parseInt(targetId))[0];
+        console.log("target demo", targetDemo);
+        console.log("target sample", targetSample);
         let samplesInfo = [];
         var barLength = targetSample.sample_values.length;
         // create a list to combine values, ids and labels together
@@ -24,8 +29,6 @@ function process() {
             // push the sample dictionary to the samplesInfo list
             samplesInfo.push(sample);
         };
-        console.log("original sample",samplesInfo);
-
         // sort the dictionary by value descending
         samplesInfo.sort((a,b) => b.value - a.value);
         console.log("sorted sample",samplesInfo);
@@ -34,24 +37,19 @@ function process() {
         var chartInfo = samplesInfo.slice(0,10);
         // inverse the list to fit the horizontal bar chart
         chartInfo.reverse();
-        console.log("chart",chartInfo);
-        
         var barValues = chartInfo.map(sample => sample.value);
         var barIds = chartInfo.map(sample => `OTU ${sample.id}`);
         var barLabels = chartInfo.map(sample => sample.label);
         console.log("value, id, labels",barValues,barIds,barLabels);
-
+        // plot the bar chart
         var bar1 = {
             type: 'bar',
             orientation: 'h',
             x: barValues,
             y: barIds,
-            text: barLabels,
-            
+            text: barLabels, 
         }
-
         barTraces = [bar1];
-
         var barLayout = {
             title: "Top 10 OTUs",
             xaxis: {title: "Values"},
@@ -64,53 +62,41 @@ function process() {
         var bubIds = samplesInfo.map(sample => sample.id);
         var bubLabels = samplesInfo.map(sample => sample.label);
         // var bubSize = samplesInfo.map(sample => 2*Math.max(sample.value)/(Math.min(sample.value)));
-        var bubColor = samplesInfo.map(sample => `"#{sample.value}"`);
-
+        var bubColor = samplesInfo.map(sample => `(${sample.id},${sample.id},${sample.id})"`);
         var bub1 = {
             type: 'scatter',
             x: bubIds,
             y: bubValues,
             text: bubLabels,
             mode: 'markers',
-            marker: {color: bubColor, size: bubValues,sizeref: 2},
-            
+            marker: {color: bubColor, size: bubValues, sizeref: 2}
         }
-
         bubTraces = [bub1]
         bubLayout = {
             autosize: true,
             yaxis: {title: "Values", autorange: true, showgrid: true},
-            xaxis: {title: "OTU ID", autorange: true, showgrid: true}
-            
+            xaxis: {title: "OTU ID", autorange: true, showgrid: true}  
         };
         Plotly.newPlot("bubble", bubTraces, bubLayout);
         
         // 3. Demographic info function
+        var demoCard = d3.select('#sample-metadata');
+        demoCard.html("");
+        Object.entries(targetDemo).forEach(([key,value]) => {
+            var demoInfo = demoCard.append('p');
+            demoInfo.text(`${key}:${value}`);
+        });
         // 4. Gauge chart funtion 
-
-
     });
-    // d3.event.preventDefault();
-
-    
-
-
 };
-
-
-
-    
-
 
 
 // access the data stored in the json file
 d3.json("./samples.json").then(data => {
-    console.log("data",data);
     var dropdownMenu = d3.select("#selDataset");
     // extract the ids of all samples as a list
     var total = data.samples
     var samplesId = data.names;
-    console.log("samplesID", samplesId);
     // create a loop to create an option dropdown for each sample id
     for (i=0; i<samplesId.length; i++) {
         var option = dropdownMenu.append('option');
