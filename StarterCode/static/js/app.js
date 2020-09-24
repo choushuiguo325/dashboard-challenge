@@ -62,14 +62,15 @@ function process() {
         var bubIds = samplesInfo.map(sample => sample.id);
         var bubLabels = samplesInfo.map(sample => sample.label);
         // var bubSize = samplesInfo.map(sample => 2*Math.max(sample.value)/(Math.min(sample.value)));
-        var bubColor = samplesInfo.map(sample => `(${sample.id},${sample.id},${sample.id})"`);
+        // var bubColor = samplesInfo.map(sample => `(${sample.id},${sample.id},${sample.id})"`);
+        var bubColor = 'yellow';
         var bub1 = {
             type: 'scatter',
             x: bubIds,
             y: bubValues,
             text: bubLabels,
             mode: 'markers',
-            marker: {color: bubColor, size: bubValues, sizeref: 2}
+            marker: {color: bubIds, size: bubValues} //, sizeref: 2
         }
         bubTraces = [bub1]
         bubLayout = {
@@ -86,7 +87,125 @@ function process() {
             var demoInfo = demoCard.append('p');
             demoInfo.text(`${key}:${value}`);
         });
+
         // 4. Gauge chart funtion 
+        
+        // var data = [
+        //     {
+        //       domain: { x: [0, 1], y: [0, 1] },
+        //       value: 9,
+        //       title: { text: "Speed" },
+        //       type: "indicator",
+        //       mode: "gauge+number+delta",
+        //       delta: { reference: 380 },
+        //       gauge: {
+        //         axis: { range: [null, 500] },
+        //         steps: [
+        //             { range: [0, 1], color: "#f6f9eb" },
+        //             { range: [1, 2], color: "#eef4d7" },
+        //             { range: [2, 3], color: "#dce9af" },
+        //             { range: [3, 4], color: "#cbdd88" },
+        //             { range: [4, 5], color: "#b9d260" },
+        //             { range: [5, 6], color: "#a8c738" },
+        //             { range: [6, 7], color: "#869f2d" },
+        //             { range: [7, 8], color: "#657722" },
+        //             { range: [8, 9], color: "#435016" }
+        //         ],
+        //         threshold: {
+        //           line: { color: "red", width: 4 },
+        //           thickness: 0.75,
+        //           value: 490
+        //         }
+        //       }
+        //     }
+        //   ];
+          
+        
+        // Plotly.newPlot('gauge', data, layout);
+        var wfreq = targetDemo.wfreq;
+        var gaugeData = [
+            {
+                domain: { x: [0, 1], y: [0, 1] },
+                text: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
+                value: wfreq,
+                title: {text:"Scrubs per Week"  },
+                type: "indicator",
+                mode: "gauge+number+delta",
+                gauge: {
+                    axis: { range: [0, 9]},
+                    // bar: { color: "darkblue" },
+                    // bgcolor: "white",
+                    // borderwidth: 2,
+                    // bordercolor: "gray",
+                    steps: [
+                        { range: [0, 1], color: "#f6f9eb" },
+                        { range: [1, 2], color: "#eef4d7" },
+                        { range: [2, 3], color: "#dce9af" },
+                        { range: [3, 4], color: "#cbdd88" },
+                        { range: [4, 5], color: "#b9d260" },
+                        { range: [5, 6], color: "#a8c738" },
+                        { range: [6, 7], color: "#869f2d" },
+                        { range: [7, 8], color: "#657722" },
+                        { range: [8, 9], color: "#435016" }
+                    ]}
+            }
+        ];
+
+        var gaugeLayout = { width: 600, height: 450, margin: { t: 0, b: 0 } };
+        Plotly.newPlot('gauge', gaugeData, gaugeLayout);
+
+
+
+
+        // var gaugeLayout = {width: 600, height: 500, margin: { t: 0, b: 0 } };
+       
+        // 
+        
+        // pie 
+        // var traceGauge = {
+        // type: 'pie',
+        // showlegend: false,
+        // hole: 0.4,
+        // rotation: 90,
+        // values: [ 81/9, 81/9, 81/9, 81/9, 81/9, 81/9, 81/9, 81/9, 81/9, 81],
+        // text: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
+        // direction: 'clockwise',
+        // textinfo: 'text',
+        // textposition: 'inside',
+        // marker: {
+        //     colors: ['#f6f9eb','#eef4d7','#dce9af','#cbdd88','#b9d260','#b9d260','#a8c738','#869f2d','#657722','#435016'],
+        //     labels: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
+        //     hoverinfo: 'label'
+        // }
+        // };
+
+        // // needle
+        // var degrees = 50, radius = .9;
+        // var radians = degrees * Math.PI / 180;
+        // var x = -1 * radius * Math.cos(radians) * wfreq;
+        // var y = radius * Math.sin(radians);
+
+        // var gaugeLayout = {
+        // shapes: [{
+        //     type: 'line',
+        //     x0: 0.5,
+        //     y0: 0.5,
+        //     x1: 0.6,
+        //     y1: 0.6,
+        //     line: {
+        //     color: 'black',
+        //     width: 3
+        //     }
+        // }],
+        //     title: 'Belly Button Washing Frequency',
+        //     xaxis: {visible: false, range: [-1, 1]},
+        //     yaxis: {visible: false, range: [-1, 1]}
+        // };
+
+        // var dataGauge = [traceGauge];
+
+        // Plotly.plot('gauge', dataGauge, gaugeLayout);
+
     });
 };
 
@@ -104,11 +223,5 @@ d3.json("./samples.json").then(data => {
         option.text(samplesId[i]);
     };
     dropdownMenu.on("change", process);
+
 });
-
-
-
-
-
-
-
